@@ -30,9 +30,25 @@ router.get("/:id", (request, response) => {
 
 // GET - A filter for firstnames that contains...
 
-router.get("/filter/contains", (req, res) => {
+// http://localhost:5000/students/search-by-name?startsWith=true&searchValue=""
+// http://localhost:5000/students/search-by-name?contains=true&searchValue="
+
+router.get("/search-by-name", (req, res) => {
+  let searchProperty = "";
+
+  if (req.query.startsWith) {
+    // startsWith
+    searchProperty = "?%";
+  } else {
+    // contains
+    searchProperty = "%?%";
+  }
+
+  console.log(searchProperty);
+
   connection.query(
-    `select * from wizard where firstname like ?`,
+    `select * from wizard where firstname like "%?%"`,
+    [req.query.searchValue],
     (err, results) => {
       if (err) {
         console.log(err);
@@ -47,20 +63,20 @@ router.get("/filter/contains", (req, res) => {
 
 // GET - A filter for data that starts with...
 
-router.get("/filter/startswith", (req, res) => {
-  connection.query(
-    "select * from wizard where firstname like ?",
-    (err, results) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send("Error retrieving filtered data for firstnames");
-      } else {
-        console.log(results);
-        res.status(200).json(results);
-      }
-    }
-  );
-});
+// router.get("/filter/startswith", (req, res) => {
+//   connection.query(
+//     "select * from wizard where firstname like '?%'",
+//     (err, results) => {
+//       if (err) {
+//         console.log(err);
+//         res.status(500).send("Error retrieving filtered data for firstnames");
+//       } else {
+//         console.log(results);
+//         res.status(200).json(results);
+//       }
+//     }
+//   );
+// });
 
 // GET - A filter for data that is greater than...
 
